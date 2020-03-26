@@ -1,4 +1,4 @@
-from PIL import Image
+from PIL import Image, ImageDraw
 
 from pylab import *
 
@@ -52,9 +52,76 @@ def contours_histogram():
     axis('off')
     figure()
     # Takes the matrix and flattens into a 1d array of length 455200
+    print("Check the histogram that it has the distribution of the bins (intensities) of the pixels!")
+    print("The most predominant bins(intensities) are around 108")
     hist(img_array.flatten(),128)
     show()  
 
-contours_histogram()
+
+# -- Interactive annotion --
+def interactive_annotation():
+    img_array = array(Image.open('empire.jpg'))
+    # Note: imshow is for matplotlib!
+    imshow(img_array)
+    print("Click 3 points on the picture!")
+    points = ginput(3)
+    print("You clicked: "), points
+    show()
 
 
+# -- Numpy basics -- 
+def numpy_test():
+    im = array(Image.open('empire.jpg'))
+    print (im.shape, im.dtype)
+    print("See that here we have number 3 because there are 3 channels (RGB) \n")
+
+    # Forcing the array to be in format as float instead of uint8
+    im = array(Image.open('empire.jpg').convert('L'),'f')
+    print (im.shape, im.dtype)
+
+    # im[i,:] = im[j,:]
+    # im[:100,:50].sum() sum of the first 100 values from the row and 50 first values of the column
+    # im[i].mean()  average of row i
+    # im[:,-1]  last column, goes backwards
+    # im[-2,:] or im[-2]  second to last row
+
+# -- Grayscale transforms -
+def grayscale_transformations():
+    im = array(Image.open('empire.jpg').convert('L'))
+
+    # Inverts the image grayscale colors
+    im2 = 255 - im
+    # Clamps the pixel intensities from 100, like a threshold
+    im3 = (100.0/255)*im + 100
+    # Squared, makes the darker pixels way darker
+    im4 = (255.0)*(im/255.0)**2
+
+    print("To see how each transformation affects the intervals, we use im.min and im.max:")
+    print("First, identity transform: f(x) = x \n"), int(im.min()), int(im.max())
+    print("Second, inverting the colors: f(x) = 255 - x \n"), int(im2.min()), int(im2.max())
+    print("Third, clamping like a threshold: f(x) = 100/255*x + 100 \n"), int(im3.min()), int(im3.max())
+    print("Fourth, parabolic, makes darker: f(x) = 255*(x/255)^2 \n"), int(im4.min()), int(im4.max())
+
+    # Now, to see the applied transforms in practice we have to convert it back as a pil_object
+    pil_im = Image.fromarray(uint8(im))
+    pil_im2 = Image.fromarray(uint8(im2))
+    pil_im3 = Image.fromarray(uint8(im3))
+    pil_im4 = Image.fromarray(uint8(im4))
+
+    # Add font to the plots so we can compare easier what is what
+    #https://stackoverflow.com/questions/16373425/add-text-on-image-using-pil
+    #font = ImageFont.truetype("sans-serif.ttf", 16)
+    #draw = ImageDraw.Draw(pil_im)
+
+    pil_im.show()
+    pil_im2.show()
+    pil_im3.show()
+    pil_im4.show()
+    
+
+
+#basics()
+#contours_histogram()
+#interactive_annotation()
+#numpy_test()
+grayscale_transformations()
