@@ -3,7 +3,7 @@ from PIL import Image, ImageDraw, ImageFont
 from pylab import *
 
 def basics():
-    """ Opening, converting to greyscale, cropping, rotating, pasting and resizing. """
+    """ Opening, converting to grayscale, cropping, rotating, pasting and resizing. """
     image = "empire.jpg"
     pil_obj = Image.open(image).convert('L')
     print(pil_obj)
@@ -85,7 +85,7 @@ def numpy_test():
     # im[:,-1]  last column, goes backwards
     # im[-2,:] or im[-2]  second to last row
 
-# -- Grayscale transforms -
+# -- Grayscale transforms --
 def grayscale_transformations():
     im = array(Image.open('empire.jpg').convert('L'))
 
@@ -125,10 +125,32 @@ def grayscale_transformations():
     pil_im3.show()
     pil_im4.show()
     
+def histogram_equalization():
+    """ The histogram looks like a normal distribution, but in order to flatten the curve """
+    number_of_bins = 256
+    im = array(Image.open('empire.jpg').convert('L'))
+    figure()
+    imhist, bins = histogram(im.flatten(),number_of_bins,normed=True)
+    print(imhist)
+    show()  
+    
+    # Cumulative distribution function
+    cdf = imhist.cumsum()
+    print("Cumulative Distribution Function: "), cdf
+    # Normalize, cdf[-1] makes it normalize between 0 and 1
+    cdf = 255*cdf/cdf[-1]
+    print("\n CDF normalized: "), cdf
+
+    # Use linear interpolation of cdf to find new pixel values
+    im2 = interp(im.flatten(), bins[:-1], cdf)
+
+    hist_eq = im2.reshape(im.shape)
+    show()
 
 
 #basics()
 #contours_histogram()
 #interactive_annotation()
 #numpy_test()
-grayscale_transformations()
+#grayscale_transformations()
+histogram_equalization()
