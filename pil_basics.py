@@ -1,4 +1,4 @@
-from PIL import Image, ImageDraw
+from PIL import Image, ImageDraw, ImageFont
 
 from pylab import *
 
@@ -109,9 +109,16 @@ def grayscale_transformations():
     pil_im4 = Image.fromarray(uint8(im4))
 
     # Add font to the plots so we can compare easier what is what
-    #https://stackoverflow.com/questions/16373425/add-text-on-image-using-pil
-    #font = ImageFont.truetype("sans-serif.ttf", 16)
-    #draw = ImageDraw.Draw(pil_im)
+    font = ImageFont.truetype("Fonts/cardenio_modern_std.ttf", 26)
+    draw1 = ImageDraw.Draw(pil_im)
+    draw2 = ImageDraw.Draw(pil_im2)
+    draw3 = ImageDraw.Draw(pil_im3)
+    draw4 = ImageDraw.Draw(pil_im4)
+    
+    draw1.text((50,50),"Identity Transf.",(255,255,255),font=font)
+    draw2.text((50,50),"Invert Colors",(255,255,255),font=font)
+    draw3.text((50,50),"Clamping (threshold from 100 to 255)",(255,255,255),font=font)
+    draw4.text((50,50),"Quadratic (makes pixels darker)",(255,255,255),font=font)
 
     pil_im.show()
     pil_im2.show()
